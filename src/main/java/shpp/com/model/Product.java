@@ -11,12 +11,13 @@ public class Product {
     @NotNull
     @Size(min = 5, max = 25)
     private String name;
-    @Max(value = 3000000)
-    @Min(value = 0)
-    private int categoryID;
+
+    private String categoryID;
 
     @Min(value = 0)
     private double price;
+
+    private Shop shop;
 
     public Product() {
         // it's empty
@@ -27,7 +28,7 @@ public class Product {
         return this;
     }
 
-    public Product setCategoryID(int categoryID) {
+    public Product setCategory(String categoryID) {
         this.categoryID = categoryID;
         return this;
     }
@@ -37,23 +38,30 @@ public class Product {
         return this;
     }
 
+    public Product setShop(Shop shop) {
+        this.shop = shop;
+        return this;
+    }
+
     public String getName() {
         return name;
     }
 
-    public int getCategoryID() {
+    public String getCategory() {
         return categoryID;
     }
 
-    public double getPrice() {
-        return price;
+    public Shop getShop() {
+        return shop;
     }
+
     @Override
     public String toString() {
         return "Product{" +
                 "name='" + name + '\'' +
-                ", categoryID=" + categoryID +
+                ", category=" + categoryID +
                 ", price=" + price +
+                ", shop=" + shop +
                 '}';
     }
 }
