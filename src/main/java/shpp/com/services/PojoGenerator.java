@@ -72,12 +72,4 @@ public class PojoGenerator {
     private int getRandomInt(int upperBound){
         return 1 + new Random().nextInt(upperBound - 1);
     }
-
-    /**
-     * Method for converting a list of product category names
-     * @return - list of product category names
-     */
-    public List<String> getListOfCategories(){
-        return listOfCategories;
-    }
 }
