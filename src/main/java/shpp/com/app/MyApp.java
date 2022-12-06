@@ -2,16 +2,11 @@ package shpp.com.app;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.InsertOneResult;
-import jakarta.json.Json;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import shpp.com.model.Product;
-import shpp.com.model.Shop;
 import shpp.com.repo.ConnectToMongoDB;
 import shpp.com.services.MyValidator;
 import shpp.com.services.PojoGenerator;
@@ -68,9 +63,9 @@ public class MyApp {
 
     private static void fillDocument(PojoGenerator pojoGenerator, MongoDatabase database, String collectionName) throws MyException {
         int numberOfDocuments = Integer.parseInt(getProperty("numberOfProducts"));
-        Stream.generate(pojoGenerator::createProduct).
-                filter((product) -> new MyValidator(product).complexValidator()).
-                limit(numberOfDocuments).forEach((product) -> addOneDocumentToDB(database, collectionName, product));
+        Stream.generate(pojoGenerator::createRemains).
+                filter((remains) -> new MyValidator(remains).complexValidator()).
+                limit(numberOfDocuments).forEach((remains) -> addOneDocumentToDB(database, collectionName, remains));
 //        for (int i = 0; i < 1000; i++){
 //            Product product = pojoGenerator.createProduct();
 //            if(new MyValidator(product).complexValidator()){
