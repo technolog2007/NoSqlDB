@@ -13,6 +13,9 @@
             <includes>
                 <include>*.properties</include>
                 <include>logback.xml</include>
+                <include>cities.txt</include>
+                <include>products.txt</include>
+                <include>streets.txt</include>
             </includes>
         </fileSet>
         <fileSet>
