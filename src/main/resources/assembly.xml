@@ -16,6 +16,7 @@
                 <include>cities.txt</include>
                 <include>products.txt</include>
                 <include>streets.txt</include>
+                <include>task.txt</include>
             </includes>
         </fileSet>
         <fileSet>
