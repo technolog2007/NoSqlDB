@@ -34,9 +34,9 @@ public class RequestToDB {
     public void search(MongoDatabase database, String parameter, String collection) {
         long startTime = System.currentTimeMillis();
         String category = getSystemProperty(parameter);
-        Document requestMax = new Document("quantity","-1");
+        Document requestMax = new Document("product.category", "Electronics");
         FindIterable<Document> result = database.getCollection(collection).find().limit(10);
-        for(Document doc : result) {
+        for (Document doc : result) {
             logger.info("Resul is : {}", doc.toJson());
         }
         logger.info("Generate time is: {}", getTotalTime(startTime));
