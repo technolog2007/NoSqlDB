@@ -7,16 +7,20 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import shpp.com.model.Remains;
 import shpp.com.services.MyValidator;
 import shpp.com.services.PojoGenerator;
 import shpp.com.util.MyException;
 import shpp.com.util.PropertiesLoader;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 import java.util.stream.Stream;
 
 public class RequestToDB {
-    private static final Logger logger = LoggerFactory.getLogger(MyApp.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestToDB.class);
     private static final String PROPERTIES_FILE = "app.properties";
 
 
@@ -31,16 +35,12 @@ public class RequestToDB {
         logger.info("Generate time is: {}", getTotalTime(startTime));
     }
 
-    public void search(MongoDatabase database, String parameter, String collection) {
-        long startTime = System.currentTimeMillis();
+    public String search(MongoDatabase database, String parameter, String collection) {
         String category = getSystemProperty(parameter);
         Document requestMax = new Document("quantity", -1);
         Document requestCategory = new Document("product.category", category);
-        FindIterable<Document> result = database.getCollection(collection).find(requestCategory).sort(requestMax).limit(1);
-        for (Document doc : result) {
-            logger.info("Resul is : {}", doc.toJson());
-        }
-        logger.info("Request time is: {}", getTotalTime(startTime));
+        FindIterable<Document> request = database.getCollection(collection).find(requestCategory).sort(requestMax).limit(1);
+        return request.first().toJson();
     }
 
     public static long getTotalTime(long startTime) {
@@ -51,7 +51,19 @@ public class RequestToDB {
         try {
             Document document = Document.parse(new ObjectMapper().writeValueAsString(object));
             database.getCollection(collectionName).insertOne(document);
-            logger.info("Document add successful!");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void addManyDocumentToDB(MongoDatabase database, String collectionName, Object object, int counter, List<Document> list) {
+        try {
+            Document document = Document.parse(new ObjectMapper().writeValueAsString(object));
+            list.add(document);
+            if (counter % 1000 == 0) {
+                database.getCollection(collectionName).insertMany(list);
+                list = new ArrayList<>();
+            }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -59,9 +71,31 @@ public class RequestToDB {
 
     private void fillDatabaseWithObjects(PojoGenerator pojoGenerator, MongoDatabase database, String collectionName) throws MyException {
         int numberOfDocuments = Integer.parseInt(getProperty("numberOfProducts"));
-        Stream.generate(pojoGenerator::createRandomValidRemains).
-                filter((remains) -> new MyValidator(remains).complexValidator()).
-                limit(numberOfDocuments).forEach((remains) -> addOneDocumentToDB(database, collectionName, remains));
+        int counter = 0;
+        List<Document> list = new ArrayList<>();
+        for (int i = 0; i < numberOfDocuments; i++) {
+            Remains remains = pojoGenerator.createRandomValidRemains();
+            if (new MyValidator(remains).complexValidator()) {
+//                addManyDocumentToDB(database, collectionName, remains, counter, list);
+                try {
+                    Document document = Document.parse(new ObjectMapper().writeValueAsString(remains));
+                    list.add(document);
+//                    if (counter % 1000 == 0) {
+//                        database.getCollection(collectionName).insertMany(list);
+//                        list.clear();
+//                    }
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+                counter++;
+            } else {
+                i--;
+            }
+        }
+        database.getCollection(collectionName).insertMany(list);
+//        Stream.generate(pojoGenerator::createRandomValidRemains).
+//                filter(remains -> new MyValidator(remains).complexValidator()).
+//                limit(numberOfDocuments).forEach(remains -> addOneDocumentToDB(database, collectionName, remains));
         logger.info("generate document successful!");
     }
 
