@@ -1,11 +1,7 @@
 package shpp.com.util;
 
 import org.junit.jupiter.api.Test;
-import shpp.com.util.MyException;
-import shpp.com.util.MyFileLoader;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class MyFileLoaderTest {
@@ -18,6 +14,16 @@ class MyFileLoaderTest {
         int expected = 12;
         int actual = listOfStreets.size();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void createInputDataFromFileInvalidFileTest() {
+        MyFileLoader loader = new MyFileLoader();
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> loader.createInputDataFromFile("streetFail.txt"),
+                "ERROR! File not found! Please input correct file name!");
+        assertEquals("ERROR! File not found! Please input correct file name!", exception.getMessage());
     }
 
     @Test
