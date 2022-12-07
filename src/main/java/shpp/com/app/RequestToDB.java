@@ -34,12 +34,13 @@ public class RequestToDB {
     public void search(MongoDatabase database, String parameter, String collection) {
         long startTime = System.currentTimeMillis();
         String category = getSystemProperty(parameter);
-        Document requestMax = new Document("product.category", "Electronics");
-        FindIterable<Document> result = database.getCollection(collection).find(requestMax).limit(10);
+        Document requestMax = new Document("quantity", -1);
+        Document requestCategory = new Document("product.category", "Electronics");
+        FindIterable<Document> result = database.getCollection(collection).find(requestCategory).sort(requestMax).limit(1);
         for (Document doc : result) {
             logger.info("Resul is : {}", doc.toJson());
         }
-        logger.info("Generate time is: {}", getTotalTime(startTime));
+        logger.info("Request time is: {}", getTotalTime(startTime));
     }
 
     private long getTotalTime(long startTime) {
