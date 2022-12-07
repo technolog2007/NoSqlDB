@@ -21,16 +21,6 @@ class MyFileLoaderTest {
     }
 
     @Test
-    void createInputDataFromFileInvalidFileTest() throws MyException {
-        MyFileLoader loader = new MyFileLoader();
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> loader.createInputDataFromFile("streetFail.txt"),
-                "ERROR! File not found! Please input correct file name!");
-        assertEquals("ERROR! File not found! Please input correct file name!", exception.getMessage());
-    }
-
-    @Test
     void getProductsTestIsNotEmpty() throws MyException {
         MyFileLoader loader = new MyFileLoader();
         loader.createInputDataFromFile("products.txt");

@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MyExceptionTest {
 
     @Test
-    void myExceptionTest() throws MyException {
+    void myExceptionTest() {
         MyException expected = new MyException("message");
         assertTrue(expected.getMessage().contains("message"));
     }
