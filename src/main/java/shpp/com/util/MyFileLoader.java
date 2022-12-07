@@ -64,7 +64,7 @@ public class MyFileLoader {
      * @param fileName - file name
      * @throws MyException -
      */
-    private void changer(String fileName) throws MyException {
+    private void changer(String fileName) {
         if (fileName.contains("cities")) {
             cities.add(line);
         } else if (fileName.contains("street")) {
@@ -76,7 +76,7 @@ public class MyFileLoader {
                 category.add(product.get(1));
             }
         } else {
-            throw new MyException("ERROR! Please, rename files with input data, which they are consist " +
+            throw new RuntimeException("ERROR! Please, rename files with input data, which they are consist " +
                     "\"cities\", \"street\", \"products\"");
         }
     }
