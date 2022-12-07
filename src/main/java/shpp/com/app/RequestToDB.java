@@ -37,7 +37,7 @@ public class RequestToDB {
         Document requestMax = new Document("quantity","-1");
         FindIterable<Document> result = database.getCollection(collection).find().sort(requestMax);
         for(Document doc : result) {
-            logger.info("Resul is : {}", doc.toString());
+            logger.info("Resul is : {}", doc.toJson());
         }
         logger.info("Generate time is: {}", getTotalTime(startTime));
     }
