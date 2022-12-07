@@ -9,7 +9,7 @@ public class Remains {
     @NotNull
     Shop shop;
     @Min(value = 0)
-    int quantity;
+    float quantity;
 
     public Remains() {
         //
@@ -33,11 +33,11 @@ public class Remains {
         return this;
     }
 
-    public int getQuantity() {
+    public float getQuantity() {
         return quantity;
     }
 
-    public Remains setQuantity(int quantity) {
+    public Remains setQuantity(float quantity) {
         this.quantity = quantity;
         return this;
     }
