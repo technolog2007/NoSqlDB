@@ -65,8 +65,8 @@ class MyFileLoaderTest {
     @Test
     void changerExceptionTest(){
         MyFileLoader loader = new MyFileLoader();
-        MyException exception = assertThrows(
-                MyException.class,
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
                 () -> loader.createInputDataFromFile("task.txt"),
                 "ERROR! Please, rename files with input data, which they are consist " +
                         "\"cities\", \"street\", \"products\"");
