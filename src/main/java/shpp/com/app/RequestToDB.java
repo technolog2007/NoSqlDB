@@ -27,7 +27,7 @@ public class RequestToDB {
     public void addDocumentsToDB(MongoDatabase database, String collection) throws MyException {
         long startTime = System.currentTimeMillis();
         PojoGenerator pojoGenerator = new PojoGenerator();
-        fillDocument(pojoGenerator, database, collection);
+        fillDatabaseWithObjects(pojoGenerator, database, collection);
         logger.info("Generate time is: {}", getTotalTime(startTime));
     }
 
@@ -35,7 +35,7 @@ public class RequestToDB {
         long startTime = System.currentTimeMillis();
         String category = getSystemProperty(parameter);
         Document requestMax = new Document("quantity", -1);
-        Document requestCategory = new Document("product.category", "Electronics");
+        Document requestCategory = new Document("product.category", category);
         FindIterable<Document> result = database.getCollection(collection).find(requestCategory).sort(requestMax).limit(1);
         for (Document doc : result) {
             logger.info("Resul is : {}", doc.toJson());
@@ -43,7 +43,7 @@ public class RequestToDB {
         logger.info("Request time is: {}", getTotalTime(startTime));
     }
 
-    private long getTotalTime(long startTime) {
+    public static long getTotalTime(long startTime) {
         return System.currentTimeMillis() - startTime;
     }
 
@@ -57,9 +57,9 @@ public class RequestToDB {
         }
     }
 
-    private void fillDocument(PojoGenerator pojoGenerator, MongoDatabase database, String collectionName) throws MyException {
+    private void fillDatabaseWithObjects(PojoGenerator pojoGenerator, MongoDatabase database, String collectionName) throws MyException {
         int numberOfDocuments = Integer.parseInt(getProperty("numberOfProducts"));
-        Stream.generate(pojoGenerator::createRemains).
+        Stream.generate(pojoGenerator::createRandomValidRemains).
                 filter((remains) -> new MyValidator(remains).complexValidator()).
                 limit(numberOfDocuments).forEach((remains) -> addOneDocumentToDB(database, collectionName, remains));
         logger.info("generate document successful!");

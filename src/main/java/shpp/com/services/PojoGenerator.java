@@ -11,10 +11,9 @@ import java.util.Random;
 
 public class PojoGenerator {
     private static final int UPPER_GENERATE_BOUND = 1000;
-    List<String> listOfCities;
-    List<String> listOfStreets;
-    List<String> listOfCategories;
-    List<List<String>> listOfProducts;
+    private final List<String> listOfCities;
+    private final List<String> listOfStreets;
+    private final List<List<String>> listOfProducts;
     private static final String STREETS_FILE = "streets.txt";
     private static final String CITIES_FILE = "cities.txt";
     private static final String PRODUCTS_FILE = "products.txt";
@@ -23,7 +22,6 @@ public class PojoGenerator {
         MyFileLoader loader = loadInputData();
         this.listOfCities = loader.getCities();
         this.listOfStreets = loader.getStreets();
-        this.listOfCategories = loader.getCategory();
         this.listOfProducts = loader.getProducts();
     }
 
@@ -33,7 +31,7 @@ public class PojoGenerator {
      * @return - MyFileLoader
      * @throws MyException -
      */
-    private static MyFileLoader loadInputData() throws MyException {
+    private MyFileLoader loadInputData() throws MyException {
         MyFileLoader loader = new MyFileLoader();
         loader.createInputDataFromFile(STREETS_FILE);
         loader.createInputDataFromFile(CITIES_FILE);
@@ -55,6 +53,10 @@ public class PojoGenerator {
         return new Shop().setName(shopName).setCity(city).setLocation(location);
     }
 
+    /**
+     * The method creates a random shop, validates it and returns a valid Shop object
+     * @return - valid Shop
+     */
     private Shop getValidShop() {
         Shop shop = createRandomShop();
         boolean flag = new MyValidator(shop).complexValidator();
@@ -79,6 +81,10 @@ public class PojoGenerator {
                 setPrice(new Random().nextDouble() * UPPER_GENERATE_BOUND);
     }
 
+    /**
+     * The method creates and validates and returns random valid Product object
+     * @return - valid Product object
+     */
     private Product getValidProduct() {
         Product product = createRandomProduct();
         boolean flag = new MyValidator(product).complexValidator();
@@ -99,11 +105,14 @@ public class PojoGenerator {
         return 1 + new Random().nextInt(upperBound - 1);
     }
 
-    public Remains createRemains() {
-        Shop shop = getValidShop();
-        Product product = getValidProduct();
-        return new Remains().setProduct(product).
+    /**
+     * The method creates and returns a valid random Remainder object
+     * @return - valid Remains
+     */
+    public Remains createRandomValidRemains() {
+        return new Remains().
+                setProduct(getValidProduct()).
                 setQuantity(getRandomInt(UPPER_GENERATE_BOUND)).
-                setShop(shop);
+                setShop(getValidShop());
     }
 }
