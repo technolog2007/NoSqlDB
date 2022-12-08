@@ -14,6 +14,7 @@ import shpp.com.services.PojoGenerator;
 import shpp.com.util.MyException;
 import shpp.com.util.PropertiesLoader;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -35,11 +36,11 @@ public class RequestToDB {
         logger.info("Generate time is: {}", getTotalTime(startTime));
     }
 
-    public String search(MongoDatabase database, String parameter, String collection) {
+    public String search(MongoDatabase database, String parameter, MongoCollection<Document> collection) {
         String category = getSystemProperty(parameter);
         Document requestMax = new Document("quantity", -1);
         Document requestCategory = new Document("product.category", category);
-        FindIterable<Document> request = database.getCollection(collection).find(requestCategory).sort(requestMax).limit(1);
+        FindIterable<Document> request = collection.find(requestCategory).sort(requestMax).limit(1);
         return request.first().toJson();
     }
 
