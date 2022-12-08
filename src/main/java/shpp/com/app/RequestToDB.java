@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 public class RequestToDB {
     private static final Logger logger = LoggerFactory.getLogger(RequestToDB.class);
     private static final String PROPERTIES_FILE = "app.properties";
+    private static final int NUMBER_OF_DOCUMENTS_IN_BATCH = 50000;
 
 
     public RequestToDB() {
@@ -47,28 +48,13 @@ public class RequestToDB {
         return System.currentTimeMillis() - startTime;
     }
 
-    private void addOneDocumentToDB(MongoDatabase database, String collectionName, Object object) {
-        try {
-            Document document = Document.parse(new ObjectMapper().writeValueAsString(object));
-            database.getCollection(collectionName).insertOne(document);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void addManyDocumentToDB(MongoDatabase database, String collectionName, Object object, int counter, List<Document> list) {
-        try {
-            Document document = Document.parse(new ObjectMapper().writeValueAsString(object));
-            list.add(document);
-            if (counter % 1000 == 0) {
-                database.getCollection(collectionName).insertMany(list);
-                list = new ArrayList<>();
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    /**
+     * Метод генерує рандомні об'єкти Залишки і наповнює ними базу даних пакетами по 20000 шт
+     * @param pojoGenerator
+     * @param database
+     * @param collectionName
+     * @throws MyException
+     */
     private void fillDatabaseWithObjects(PojoGenerator pojoGenerator, MongoDatabase database, String collectionName) throws MyException {
         int numberOfDocuments = Integer.parseInt(getProperty("numberOfProducts"));
         int counter = 0;
@@ -79,7 +65,7 @@ public class RequestToDB {
                 try {
                     Document document = Document.parse(new ObjectMapper().writeValueAsString(remains));
                     list.add(document);
-                    if (counter % 20000 == 0) {
+                    if (counter % NUMBER_OF_DOCUMENTS_IN_BATCH == 0) {
                         database.getCollection(collectionName).insertMany(list);
                         list.clear();
                         logger.info("Send a pack of # {}", i);
