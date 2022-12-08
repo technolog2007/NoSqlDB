@@ -79,7 +79,7 @@ public class RequestToDB {
                 try {
                     Document document = Document.parse(new ObjectMapper().writeValueAsString(remains));
                     list.add(document);
-                    if (counter % 5000 == 0) {
+                    if (counter % 10000 == 0) {
                         database.getCollection(collectionName).insertMany(list);
                         list.clear();
                         logger.info("Send a pack of # {}", i);
