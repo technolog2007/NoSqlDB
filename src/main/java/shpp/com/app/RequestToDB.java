@@ -49,11 +49,11 @@ public class RequestToDB {
     }
 
     /**
-     * Метод генерує рандомні об'єкти Залишки і наповнює ними базу даних пакетами по 20000 шт
-     * @param pojoGenerator
-     * @param database
-     * @param collectionName
-     * @throws MyException
+     * The method generates random objects Overflows and refills the database in batches of N pcs
+     * @param pojoGenerator - random POJO generator
+     * @param database - mongodb database
+     * @param collectionName - collection name
+     * @throws MyException -
      */
     private void fillDatabaseWithObjects(PojoGenerator pojoGenerator, MongoDatabase database, String collectionName) throws MyException {
         int numberOfDocuments = Integer.parseInt(getProperty("numberOfProducts"));
