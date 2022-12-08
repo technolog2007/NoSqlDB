@@ -14,6 +14,7 @@ public class MyApp {
     private static final String DATABASE_NAME = "test";
     private static final String COLLECTION_NAME = "collection_test";
     public static void main(String[] args) throws MyException {
+//        ((LoggerContext) LoggerFactory.getILoggerFactory()).getLogger("org.mongodb.driver").setLevel(ch.qos.logback.classic.Level.convertAnSLF4JLevel(Level.WARN));
         long startProgramTime = System.currentTimeMillis();
         long startTime = System.currentTimeMillis();
         ConnectToMongoDB mongo = new ConnectToMongoDB();
@@ -25,7 +26,7 @@ public class MyApp {
         // creating a collection
         startTime = System.currentTimeMillis();
         RequestToDB request = new RequestToDB();
-        request.addDocumentsToDB(database, COLLECTION_NAME);
+        request.addDocumentsToDB(database, database.getCollection(COLLECTION_NAME));
         long generationTime = RequestToDB.getTotalTime(startTime);
         // search by collection
         startTime = System.currentTimeMillis();
