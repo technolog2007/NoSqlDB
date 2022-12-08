@@ -3,6 +3,7 @@ package shpp.com.app;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -20,17 +21,17 @@ import java.util.Properties;
 public class RequestToDB {
     private static final Logger logger = LoggerFactory.getLogger(RequestToDB.class);
     private static final String PROPERTIES_FILE = "app.properties";
-    private static final int NUMBER_OF_DOCUMENTS_IN_BATCH = 80000;
+    private static final int NUMBER_OF_DOCUMENTS_IN_BATCH = 50000;
 
 
     public RequestToDB() {
         //
     }
 
-    public void addDocumentsToDB(MongoDatabase database, String collection) throws MyException {
+    public void addDocumentsToDB(MongoDatabase database, MongoCollection<Document> collection) throws MyException {
         long startTime = System.currentTimeMillis();
         PojoGenerator pojoGenerator = new PojoGenerator();
-        fillDatabaseWithObjects(pojoGenerator, database, collection);
+        fillDatabaseWithObjects(pojoGenerator, collection);
         logger.info("Generate time is: {}", getTotalTime(startTime));
     }
 
@@ -49,11 +50,11 @@ public class RequestToDB {
     /**
      * The method generates random objects Overflows and refills the database in batches of N pcs
      * @param pojoGenerator - random POJO generator
-     * @param database - mongodb database
-     * @param collectionName - collection name
+//     * @param database - mongodb database
+//     * @param collectionName - collection name
      * @throws MyException -
      */
-    private void fillDatabaseWithObjects(PojoGenerator pojoGenerator, MongoDatabase database, String collectionName) throws MyException {
+    private void fillDatabaseWithObjects(PojoGenerator pojoGenerator, MongoCollection<Document> collection) throws MyException {
         int numberOfDocuments = Integer.parseInt(getProperty("numberOfProducts"));
         int counter = 0;
         List<Document> list = new ArrayList<>();
@@ -64,7 +65,8 @@ public class RequestToDB {
                     Document document = Document.parse(new ObjectMapper().writeValueAsString(remains));
                     list.add(document);
                     if (counter % NUMBER_OF_DOCUMENTS_IN_BATCH == 0) {
-                        database.getCollection(collectionName).insertMany(list);
+                        collection.insertMany(list);
+//                        database.getCollection(collectionName).insertMany(list);
                         list.clear();
                         logger.info("Send a pack of # {}", i);
                     }
@@ -76,7 +78,7 @@ public class RequestToDB {
                 i--;
             }
         }
-        database.getCollection(collectionName).insertMany(list);
+        collection.insertMany(list);
         logger.info("generate document successful!");
     }
 
