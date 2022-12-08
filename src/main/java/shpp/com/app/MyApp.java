@@ -30,7 +30,7 @@ public class MyApp {
         long generationTime = RequestToDB.getTotalTime(startTime);
         // search by collection
         startTime = System.currentTimeMillis();
-        String result = request.search(database, "category", COLLECTION_NAME);
+        String result = request.search(database, "category", database.getCollection(COLLECTION_NAME));
         long requestTime = RequestToDB.getTotalTime(startTime);
         logger.info("_______________________________________________________________________________________________");
         logger.info("RESULT : {}", result);
