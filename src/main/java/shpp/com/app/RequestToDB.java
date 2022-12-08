@@ -76,14 +76,13 @@ public class RequestToDB {
         for (int i = 0; i < numberOfDocuments; i++) {
             Remains remains = pojoGenerator.createRandomValidRemains();
             if (new MyValidator(remains).complexValidator()) {
-//                addManyDocumentToDB(database, collectionName, remains, counter, list);
                 try {
                     Document document = Document.parse(new ObjectMapper().writeValueAsString(remains));
                     list.add(document);
-//                    if (counter % 1000 == 0) {
-//                        database.getCollection(collectionName).insertMany(list);
-//                        list.clear();
-//                    }
+                    if (counter % 1000 == 0) {
+                        database.getCollection(collectionName).insertMany(list);
+                        list.clear();
+                    }
                 } catch (JsonProcessingException e) {
                     throw new RuntimeException(e);
                 }
