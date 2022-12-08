@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class RequestToDB {
     private static final Logger logger = LoggerFactory.getLogger(RequestToDB.class);
     private static final String PROPERTIES_FILE = "app.properties";
-    private static final int NUMBER_OF_DOCUMENTS_IN_BATCH = 50000;
+    private static final int NUMBER_OF_DOCUMENTS_IN_BATCH = 100000;
 
 
     public RequestToDB() {
